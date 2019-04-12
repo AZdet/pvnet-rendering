@@ -178,7 +178,7 @@ class Renderer(object):
         self.class_type = class_type
         self.bg_imgs_path = os.path.join(cfg.DATA_DIR, 'bg_imgs.npy')
         self.poses_path = os.path.join(cfg.DATA_DIR, 'blender_poses', '{}_poses.npy').format(class_type)
-        self.output_dir_path = os.path.join(cfg.LINEMOD,'renders/{}').format(class_type)
+        self.output_dir_path = os.path.join(cfg.DATA_DIR,'renders/{}').format(class_type)
         self.blender_path = cfg.BLENDER_PATH
         self.blank_blend = os.path.join(cfg.DATA_DIR, 'blank.blend')
         self.py_path = os.path.join(cfg.BLENDER_DIR, 'render_backend.py')
