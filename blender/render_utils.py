@@ -109,15 +109,18 @@ class DataStatistics(object):
 
     def sample_poses(self):
         eulers, translations = self.get_dataset_poses()
-        num_samples = cfg.NUM_SYN
-        azimuths, elevations = self.sample_sphere(num_samples)
-        euler_sampler = stats.gaussian_kde(eulers.T)
-        eulers = euler_sampler.resample(num_samples).T
-        eulers[:, 0] = azimuths
-        eulers[:, 1] = elevations
-        translation_sampler = stats.gaussian_kde(translations.T)
-        translations = translation_sampler.resample(num_samples).T
+        # we don't want to sample from dataset pose distribution, but just dataset pose itself
+        # num_samples = cfg.NUM_SYN
+        # azimuths, elevations = self.sample_sphere(num_samples)
+        # euler_sampler = stats.gaussian_kde(eulers.T)
+        # eulers = euler_sampler.resample(num_samples).T   
+        # eulers[:, 0] = azimuths
+        # eulers[:, 1] = elevations
+        # translation_sampler = stats.gaussian_kde(translations.T)
+        # translations = translation_sampler.resample(num_samples).T
         np.save(self.blender_poses_path, np.concatenate([eulers, translations], axis=-1))
+
+
 
 
 class YCBDataStatistics(DataStatistics):
@@ -321,8 +324,10 @@ class MultiRenderer(Renderer):
         self.get_bg_imgs()
         self.sample_poses()
 
-        os.system('{} {} --background --python {} -- --input {} --output_dir {} --use_cycles True --bg_imgs {} --poses_path {}'.
-                  format(self.blender_path, self.blank_blend, self.py_path, self.obj_path, self.output_dir_path, self.bg_imgs_path, self.poses_path))
+        # os.system('{} {} --background --python {} -- --input {} --output_dir {} --use_cycles True --bg_imgs {} --poses_path {}'.
+        #           format(self.blender_path, self.blank_blend, self.py_path, self.obj_path, self.output_dir_path, self.bg_imgs_path, self.poses_path))
+        os.system('{} {} --background --python {} -- --input {} --output_dir {} --use_cycles True --poses_path {}'.
+                  format(self.blender_path, self.blank_blend, self.py_path, self.obj_path, self.output_dir_path, self.poses_path))
         depth_paths = glob.glob(os.path.join(self.output_dir_path, '*.exr'))
         for depth_path in depth_paths:
             self.exr_to_png(depth_path)
