@@ -11,6 +11,9 @@ def run_rendering():
     from blender.render_utils import Renderer, YCBRenderer
     # YCBRenderer.multi_thread_render()
     # renderer = YCBRenderer('037_scissors')
+#     for cls_name in cfg.linemod_cls_names:
+#         renderer=Renderer(cls_name)
+#         renderer.run()
     renderer=Renderer('cat')
     renderer.run()
 

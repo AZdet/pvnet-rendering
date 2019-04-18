@@ -4,9 +4,12 @@ import math
 import bpy
 import numpy as np
 import sys
+import transforms3d
 from transforms3d.euler import euler2mat
 import itertools
 import glob
+
+print(sys.version)
 
 UTILS_DIR = os.path.dirname(os.path.abspath(__file__))
 LIB_DIR = os.path.dirname(UTILS_DIR)
@@ -87,6 +90,12 @@ def setup():
     camera = bpy.data.objects['Camera']
     bpy.data.cameras['Camera'].clip_end = 10000
 
+    # set the K of camera
+    #bpy.data.cameras['Camera'].lens = 35 #573
+    # bpy.data.cameras['Camera'].shift_x = 320#325.2611
+    # bpy.data.cameras['Camera'].shift_y = 240#242.04899
+    # print(bpy.data.cameras['Camera'].lens)
+    # print(bpy.data.cameras['Camera'].shift_x)
     # configure rendered image's parameters
     bpy.context.scene.render.resolution_x = cfg.WIDTH
     bpy.context.scene.render.resolution_y = cfg.HEIGHT
@@ -119,6 +128,23 @@ def setup():
     map_node.inputs[4].default_value = 1
     links.new(rl.outputs['Depth'], map_node.inputs[0])
     links.new(map_node.outputs[0], depth_file_output.inputs[0])
+
+
+    ## 
+    #print(get_K_P_from_blender(camera)["K"])
+    c = camera.data # bpy.data.cameras['Camera']
+    # # print(c.lens)
+    # # print(c.shift_x)
+    # # print(c.shift_y)
+    # #print(c.sensor_fit)
+    # #print(c.sensor_width)
+    camera.data.lens = 573 * c.sensor_width / cfg.WIDTH 
+    #print(camera.data.shift_x)
+    camera.data.shift_x = (cfg.WIDTH/2 - 325.26110) / cfg.WIDTH
+    camera.data.shift_y = (cfg.HEIGHT/2 - 242.04899) / cfg.WIDTH
+    print(get_K_P_from_blender(camera)["K"])
+    #raise TypeError
+    ## 
 
     return camera, depth_file_output
 
