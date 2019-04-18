@@ -11,7 +11,7 @@ import Imath
 from multiprocessing.dummy import Pool
 import struct
 import scipy.io as sio
-
+from scipy.misc import imsave
 
 class DataStatistics(object):
     # world_to_camera_pose = np.array([[-1.19209304e-07,   1.00000000e+00,  -2.98023188e-08, 1.19209304e-07],
@@ -527,3 +527,16 @@ class OpenGLRenderer(object):
             return render(model, im_size=[640, 480], K=K, R=R, t=t, clip_near=10, clip_far=10000, mode='depth') / 1000.
         else:
             return render(model, im_size=[640, 480], K=K, R=R, t=t, clip_near=10, clip_far=10000, mode='rgb')
+
+    def run(self, class_type):
+        self.get_bg_imgs()
+        self.sample_poses()
+        poses = np.load(self.blender_poses_path)
+        bgs = np.load(self.self.bg_imgs_path)
+        for i, pose, bg in enumerate(zip(poses, bgs)):
+            rgb = self.render(class_type, pose, bg, intrinsic_matrix=self.intrinsic_matrix['linemod'], render_type='rgb')
+            imsave(self.output_dir_path + '{}.jpg'.format(i), rgb)
+            a = self.output_dir_path
+        depth_paths = glob.glob(os.path.join(self.output_dir_path, '*.exr'))
+        for depth_path in depth_paths:
+            self.exr_to_png(depth_path)
