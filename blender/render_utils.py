@@ -6,8 +6,8 @@ from transforms3d.quaternions import mat2quat
 import glob
 from PIL import Image
 from scipy import stats
-import OpenEXR
-import Imath
+#import OpenEXR
+#import Imath
 from multiprocessing.dummy import Pool
 import struct
 import scipy.io as sio

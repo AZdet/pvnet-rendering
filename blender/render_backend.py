@@ -1,7 +1,7 @@
 import argparse
 import os
 import math
-import bpy
+# import bpy
 import numpy as np
 import sys
 import transforms3d
