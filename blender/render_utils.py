@@ -525,8 +525,10 @@ class OpenGLRenderer(object):
 
         if render_type == 'depth':
             return render(model, im_size=[640, 480], K=K, R=R, t=t, clip_near=10, clip_far=10000, mode='depth') / 1000.
-        else:
+        elif render_type == 'rgb':
             return render(model, im_size=[640, 480], K=K, R=R, t=t, clip_near=10, clip_far=10000, mode='rgb')
+        else:
+            return render(model, im_size=[640, 480], K=K, R=R, t=t, clip_near=10, clip_far=10000)
 
     def run(self, class_type):
         self.get_bg_imgs()

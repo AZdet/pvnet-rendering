@@ -7,7 +7,7 @@ import os
 from PIL import Image
 from plyfile import PlyData
 
-from ../config import cfg
+from config import cfg
 from transforms3d.euler import mat2euler
 
 import pickle
