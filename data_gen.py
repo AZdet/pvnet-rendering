@@ -5,6 +5,7 @@ import numpy as np
 from base_utils import PoseTransformer, read_pose, read_pickle, save_pickle
 import cv2
 import random
+from tqdm import tqdm
 
 def fuse(img, mask, background):
     background = cv2.resize(background,(img.shape[1], img.shape[0]))
@@ -16,12 +17,13 @@ use_background = True
 r = OpenGLRenderer()
 bg_imgs_path = os.path.join(cfg.DATA_DIR, 'bg_imgs.npy')
 bg_imgs = np.load(bg_imgs_path)
-for class_type in cfg.linemod_cls_names:
+for class_type in tqdm(cfg.linemod_cls_names):
     dir_path = os.path.join(cfg.LINEMOD_ORIG,'{}/data'.format(class_type))
     train_set = np.loadtxt(os.path.join(cfg.LINEMOD, '{}/training_range.txt'.format(class_type)),np.int32)
-    output_path = os.path.join(cfg.LINEMOD, '{}/renders'.format(class_type))
+    output_path = os.path.join(cfg.DATA_DIR, 'renders/{}'.format(class_type))
     trans = PoseTransformer(class_type)
-    for idx in train_set:
+    os.makedirs(output_path, exist_ok=True)
+    for idx in tqdm(train_set):
             rot_path = os.path.join(dir_path, 'rot{}.rot'.format(idx))
             tra_path = os.path.join(dir_path, 'tra{}.tra'.format(idx))
             pose = read_pose(rot_path, tra_path)
@@ -34,4 +36,5 @@ for class_type in cfg.linemod_cls_names:
             else:
                 background = np.zeros_like(rgb)
             rgb = fuse(rgb, mask, background)
-            cv2.imwrite('{}.jpg'.format(idx), rgb)
+            retval = cv2.imwrite(os.path.join(output_path, '{}.jpg'.format(idx)), rgb)
+            
